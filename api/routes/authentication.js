@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 const auth = express.Router();
-import userModels from '../models/user';
+import userModels from '../models/user.js';
 
 (async function () {
   try {
