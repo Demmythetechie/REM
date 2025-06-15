@@ -4,7 +4,7 @@
   "description": "This is REM official API",
   "license": "ISC",
   "author": "REM@2025",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
