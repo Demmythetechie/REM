@@ -1,5 +1,5 @@
 const express = require('express');
-import auth from './Routes/authentication';
+import auth from './routes/authentication';
 const app = express()
 const port = 3000
 
