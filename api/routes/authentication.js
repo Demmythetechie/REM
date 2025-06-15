@@ -26,7 +26,7 @@ auth.post('/signup', async (req, res) => {
 
   try {
     const data = {
-      "firstname": req.body.firstname,
+      "firstname": req.body.firstnam,
       "lastname": req.body.lastname,
       "email": req.body.email,
       "career": req.body.career,
