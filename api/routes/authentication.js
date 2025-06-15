@@ -5,7 +5,7 @@ import userModels from '../models/user.js';
 
 (async function () {
   try {
-    await mongoose.connect('mongodb+srv://REM:REM-2025@rem-storage.i7padcv.mongodb.net/REM?retryWrites=true&w=majority&appName=REM-Storage')
+    await mongoose.connect('mongodb+srv://REM:REM-2025@rem-storage.i7padcv.mongodb.net/rem?retryWrites=true&w=majority&appName=REM-Storage')
     console.log('connected Successfully ✅');
   } catch (error) {
     console.error("MongoDB Connection Error ❌:", error);
