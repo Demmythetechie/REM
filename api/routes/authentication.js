@@ -5,4 +5,4 @@ auth.get('/signup', (req, res) => {
   res.send('Sign up Page');
 });
 
-module.exports = auth;
+export default auth;
