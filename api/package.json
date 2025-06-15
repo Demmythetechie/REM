@@ -1,0 +1,15 @@
+{
+  "name": "rem_api",
+  "version": "1.0.0",
+  "description": "This is REM official API",
+  "license": "ISC",
+  "author": "REM@2025",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
