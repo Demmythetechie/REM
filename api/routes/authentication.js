@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const auth = express.Router();
 
 auth.get('/signup', (req, res) => {
