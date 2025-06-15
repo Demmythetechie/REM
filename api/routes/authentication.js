@@ -25,8 +25,9 @@ auth.post('/signup', async (req, res) => {
   */
 
   try {
+    console.log(req.body);
     const { firstname, lastname, email, career, password } = req.body;
-    const newUser = new userModels({firstname: firstname, lastname: lastname, email: email, career: career, password: password, verification: false});
+    const newUser = new userModels({firstName: firstname, lastName: lastname, email: email, career: career, password: password, verification: false});
     await newUser.save();
   } catch(e) {
     console.log(`Error ${e}`);
