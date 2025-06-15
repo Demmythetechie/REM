@@ -10,4 +10,4 @@ const userSchemas = new Schema({
   verification: Boolean
 });
 
-export {userSchemas};
+export default userSchemas;
