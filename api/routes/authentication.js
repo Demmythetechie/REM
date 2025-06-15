@@ -31,7 +31,6 @@ auth.post('/signup', async (req, res) => {
       "email": req.body.email,
       "career": req.body.career,
       "password": req.body.password,
-      "verification": Boolean
     }
     const newUser = new userModels({firstName: data.firstname, lastName: data.lastname, email: data.email, career: data.career, password: data.password, verification: false});
     await newUser.save();
