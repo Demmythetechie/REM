@@ -69,7 +69,7 @@ auth.get('/verify/:token', async (req, res) => {
   }
 })
 
-auth.post('signin', async (req, res) => {
+auth.post('/signin', async (req, res) => {
   try {
     const data = req.body;
     const exist = await userModels.findOne({email: data.email});
