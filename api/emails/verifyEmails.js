@@ -7,7 +7,7 @@ async function verifyEmail(receiver, name, tk) {
     let emailTemplate = fs.readFileSync(templatePath, "utf8");
 
     // Replace placeholders
-    emailTemplate = emailTemplate.replace("{{name}}", name).replace("{{verification_link}}", `https://rem-application-programming-interface.onrender.com/verify/${tk}`);
+    emailTemplate = emailTemplate.replace("{{name}}", name).replace("{{verification_link}}", `https://rem-application-programming-interface.onrender.com/authentication/verify/${tk}`);
 
     const mailOptions = {
         from: "naim.okunade@gmail.com", // Sender's email
