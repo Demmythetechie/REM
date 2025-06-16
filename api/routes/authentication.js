@@ -45,7 +45,7 @@ auth.post('/signup', async (req, res) => {
       res.json({exist: true, message: "An account with this email has been created."});
     }
   } catch(e) {
-    res.json({server: 0});
+    res.json({server: 0, message: e.name});
   }
 });
 
@@ -55,13 +55,18 @@ auth.get('/verify/:token', async (req, res) => {
     const verifying = jwt.verify(token, process.env.SECRET_KEY);
     const newUser = new userModels({firstName: verifying.firstname, lastName: verifying.lastname, email: verifying.email, career: verifying.career, password: verifying.password});
     await newUser.save();
-    console.log("works");
     res.render("verified", {
       title: "Email Verified",
       message: "Your email has been confirmed succesfully"
     });
   } catch(e) {
-    console.log();
+    if (e.name === 'JsonWebTokenError') {
+      res.json({verification: false, message: "Token is being manipulated"});
+    } else if(e.name === 'TokenExpiredError') {
+      res.json({expired: false, message: 'Token has expired'});
+    } else {
+      res.json({server: 0, message: e.name});
+    }
   }
 })
 
