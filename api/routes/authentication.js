@@ -9,7 +9,6 @@ import verifyEmail from '../emails/verifyEmails.js';
 
 //Loaded secret key from evnviroment variable
 import dotenv from 'dotenv';
-import { measureMemory } from 'vm';
 dotenv.config();
 
 
@@ -42,7 +41,7 @@ auth.post('/signup', async (req, res) => {
       verifyEmail(req.body.email, req.body.firstname, token)
       res.json({signup: true});
     } else {
-      res.json({exist: true, message: "An account with this email has been created."});
+      res.json({userExist: true, message: "An account with this email has been created."});
     }
   } catch(e) {
     res.json({server: 0, message: e.name});
@@ -69,5 +68,24 @@ auth.get('/verify/:token', async (req, res) => {
     }
   }
 })
+
+auth.post('signin', async (req, res) => {
+  try {
+    const data = req.body;
+    const exist = await userModels.findOne({email: data.email});
+    if (exist !== null) {
+      if (data.password === exist.password) {
+        const token = jwt.sign(data, process.env.SIGN_IN_SECRET_KEY);
+        res.header('Authorization', `Bearer ${token}`).json({login: true, message: "You have logged in successfully"});
+      } else {
+        res.json({login: false, message: "Your email or passowrd is wrong"});
+      }
+    } else {
+      res.json({userExist: false, message: "No such user exist"});
+    }
+  } catch(e) {
+    res.json({server: 0, message: e.name});
+  }
+});
 
 export default auth;
