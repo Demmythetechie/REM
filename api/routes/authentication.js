@@ -9,6 +9,7 @@ import verifyEmail from '../emails/verifyEmails.js';
 
 //Loaded secret key from evnviroment variable
 import dotenv from 'dotenv';
+import { measureMemory } from 'vm';
 dotenv.config();
 
 
@@ -39,16 +40,12 @@ auth.post('/signup', async (req, res) => {
     if (exist === null) {
       const token = jwt.sign(req.body, process.env.SECRET_KEY, { expiresIn: '1h' });
       verifyEmail(req.body.email, req.body.firstname, token)
-      res.send("successfull");
-      /*
-        const newUser = new userModels({firstName: req.body.firstname, lastName: req.body.lastname, email: req.body.email, career: req.body.career, password: req.body.password, verification: false});
-        await newUser.save();
-      */
+      res.json({signup: true});
     } else {
-      res.send("User exist");
+      res.json({exist: true, message: "An account with this email has been created."});
     }
   } catch(e) {
-    console.log(`Error ${e}`);
+    res.json({server: 0});
   }
 });
 
