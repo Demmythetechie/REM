@@ -6,8 +6,7 @@ const userSchemas = new Schema({
   lastName: String,
   email: String,
   career: String,
-  password: String,
-  verification: Boolean
+  password: String
 });
 
 export default userSchemas;
