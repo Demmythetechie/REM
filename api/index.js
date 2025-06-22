@@ -2,7 +2,10 @@ import express from 'express';
 import cors from "cors";
 import path from 'path';
 import { fileURLToPath } from "url";
+// ALL API ROUTE
 import auth from './routes/authentication.js';
+import journal from './routes/journal.js';
+
 const app = express()
 const port = 3000
 const corsOptions = {
@@ -26,6 +29,7 @@ app.use(express.json());
 
 //Routes
 app.use('/authentication', auth);
+app.use('/journal', journal);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -16,6 +16,9 @@ export default function Homepage() {
     const [inputText, setInputText] = useState('');
     const [sent, setSent] = useState(false);
 
+    // User message
+    const [userMessage, setUserMessage] = useState(null);
+
     function handleFocus(event) {
         setQuery(true);
         setTyping(true);
@@ -33,18 +36,22 @@ export default function Homepage() {
     async function sendPrompt() {
         if (inputText.trim() !== '') {
             setSent(true);
-        }
-        const data = {
-            sender: "User",
-            message: inputText,
-            link: [],
-            file: []
-        }
-        await axios.post('', data, {
-            headers: {
-                Authorization: 'Bearer token', // optional
+            const data = {
+                sender: "User",
+                message: inputText,
+                link: [],
+                file: []
             }
-        });
+            setUserMessage(data);
+            setInputText("");
+            /*
+            await axios.post('', data, {
+                headers: {
+                    Authorization: 'Bearer token', // optional
+                }
+            });
+            */
+        }
     }
 
     return (
@@ -119,7 +126,11 @@ export default function Homepage() {
                                 </View>
                             </View>
                         :
-                            <View className='w-[100%] h-[80%]'></View>
+                            <View className={`flex w-[100%] h-[80%] flex-col items-start justify-start gap-y-[3%]`}>
+                                <View className='w-[65vw] rounded-lg border ml-[26%] px-[4%] py-[3%]'>
+                                    <Text className='text-lg font-light'>{userMessage.message}</Text>
+                                </View>
+                            </View>
                         }
                     </ScrollView>
                     <View className={`${queryFocus ? 'w-[100%] h-[15vh]' : 'w-[90%] h-[15vh]'} flex flex-col justify-between items-start border border-double rounded-3xl`}>
