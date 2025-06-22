@@ -1,7 +1,8 @@
 import LottieView from 'lottie-react-native';
 import React, { useState, useEffect } from 'react';
 import Svg, { G, Path, Circle } from 'react-native-svg';
-import { View, Text, Button, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Button, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import axios from 'axios';
 
 
 export default function Homepage() {
@@ -9,86 +10,120 @@ export default function Homepage() {
 
     const [queryFocus, setQuery] = useState(false);
     const [emergency, setEmergency] = useState(false);
+    const [typing, setTyping] = useState(false);
+
+    //User Prompt input
+    const [inputText, setInputText] = useState('');
+    const [sent, setSent] = useState(false);
 
     function handleFocus(event) {
         setQuery(true);
+        setTyping(true);
     }
 
     function startSession() {
         setEmergency(true);
     }
 
+    function noFocus() {
+        setQuery(false);
+        setTyping(false);
+    }
+
+    async function sendPrompt() {
+        if (inputText.trim() !== '') {
+            setSent(true);
+        }
+        const data = {
+            sender: "User",
+            message: inputText,
+            link: [],
+            file: []
+        }
+        await axios.post('', data, {
+            headers: {
+                Authorization: 'Bearer token', // optional
+            }
+        });
+    }
+
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
             <View className={`w-[100vw] h-[100vh] flex justify-start items-center`}>
-                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className='flex flex-col justify-between items-center w-[90vw] h-[90vh]' keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 60}>
-                    <Pressable className='w-[100%] flex flex-row justify-end pt-[6%] pr-[1%]' onPress={startSession}>
-                        <View className='w-[10%] aspect-square'>
-                            <Svg viewBox="0 0 100 100">
-                                <Path stroke="#000" d="M0 25L100 25" strokeWidth="7" />
-                                <Path stroke="#000" d="M100 50L30 50" strokeWidth="7" />
-                                <Path stroke="#000" d="M100 75L10 75" strokeWidth="7" />
-                            </Svg>
-                        </View>
-                    </Pressable>
-                    <View className={`flex w-[100%] h-[70%] flex-col justify-center items-start gap-y-[3%]`}>
-                        <View className='w-[80%]'>
-                            <Text className='text-black font-light text-3xl'>Hello Naheem,{'\n'}<Text className='text-2xl font-light'>What can i help you with today?</Text></Text>
-                        </View>
-                        <View className='w-[100%] flex flex-row flex-wrap h-[70%] justify-between gap-y-[4%]'>
-                            <View className='flex w-[100%] h-[45%] rounded-md flex-col justify-between'>
-                                <Text className='text-lg font-light'>Coming Up!!!</Text>
-                                <Pressable className='w-[100%] h-[35%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-red-500'>
-                                   <Text className='text-lg font-light text-white'>Apply for the Microsoft...</Text>
-                                   <View className='w-[10%] aspect-square'>
-                                        <Svg viewBox="0 0 24 24">
-                                            <Path
-                                                d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
-                                                data-original="#ffffff" fill="#fff"
-                                            />
-                                            <Path
-                                                d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
-                                                data-original="#ffffff" fill="#fff"
-                                            />
-                                        </Svg>
-                                   </View>
-                                </Pressable>
-                                <Pressable className='w-[90%] h-[30%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-[#E5E4E2]/50'>
-                                   <Text className='text-lg font-light'>Apply for the Microsoft...</Text>
-                                   <View className='w-[10%] aspect-square'>
-                                        <Svg viewBox="0 0 24 24">
-                                            <Path
-                                                d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
-                                                data-original="#000000" fill="#808080"
-                                            />
-                                            <Path
-                                                d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
-                                                data-original="#000000" fill="#808080"
-                                            />
-                                        </Svg>
-                                   </View>
-                                </Pressable>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className={`${queryFocus ? 'w-[90vw] h-[97vh] pb-[0vh]' : 'flex-1 pb-[3vh]'} flex flex-col items-center justify-center pb-[3vh]`} keyboardVerticalOffset={queryFocus ? 0 : 0}>
+                    <ScrollView contentContainerClassName={`${queryFocus ? 'w-[100%] h-[80vh]' : 'w-[90%] h-[80vh]'} w-[100%] h-[80vh] flex flex-col justify-start ${queryFocus ? 'gap-y-[5%]' : 'gap-y-[14%]'} items-center pt-[8%]`}>
+                        <Pressable className='w-[100%] flex flex-row justify-end pt-[6%] pr-[1%]' onPress={startSession}>
+                            <View className='w-[10%] aspect-square'>
+                                <Svg viewBox="0 0 100 100">
+                                    <Path stroke="#000" d="M0 25L100 25" strokeWidth="7" />
+                                    <Path stroke="#000" d="M100 50L30 50" strokeWidth="7" />
+                                    <Path stroke="#000" d="M100 75L10 75" strokeWidth="7" />
+                                </Svg>
                             </View>
-                            <View className='flex w-[58%] h-[45%] bg-[#E5E4E2]/50 rounded-md flex-col justify-between items-start py-[4%]'>
-                                <View className='w-[100%] pl-[10%] pr-[2%]'>
-                                    <Text className='font-extralight text-lg'>Want to tailor your CV to be Job specific, Hit me!</Text>
+                        </Pressable>
+                        {!sent ?
+                            <View className={`flex w-[100%] h-[80%] flex-col items-start gap-y-[3%]`}>
+                                <View className='w-[80%]'>
+                                    <Text className='text-black font-light text-3xl'>Hello Naheem,{'\n'}<Text className='text-2xl font-light'>What can i help you with today?</Text></Text>
                                 </View>
-                                <View className='w-[40%] aspect-square'>
-                                    <LottieView source={require('../RemUpload/cv.json')} autoPlay loop={true} style={{ width: '100%', height: '100%' }} />
+                                <View className='w-[100%] flex flex-row flex-wrap h-[70%] justify-between gap-y-[4%]'>
+                                    <View className={`flex w-[100%] h-[45%] rounded-md flex-col justify-between`}>
+                                        <Text className='text-lg font-light'>Coming Up!!!</Text>
+                                        <Pressable className='w-[100%] h-[35%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-green-600'>
+                                        <Text className='text-lg font-light text-white'>Apply for the Microsoft...</Text>
+                                        <View className='w-[10%] aspect-square'>
+                                                <Svg viewBox="0 0 24 24">
+                                                    <Path
+                                                        d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
+                                                        data-original="#ffffff" fill="#fff"
+                                                    />
+                                                    <Path
+                                                        d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
+                                                        data-original="#ffffff" fill="#fff"
+                                                    />
+                                                </Svg>
+                                        </View>
+                                        </Pressable>
+                                        <Pressable className='w-[90%] h-[30%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-[#E5E4E2]/50'>
+                                        <Text className='text-lg font-light'>Apply for the Microsoft...</Text>
+                                        <View className='w-[10%] aspect-square'>
+                                                <Svg viewBox="0 0 24 24">
+                                                    <Path
+                                                        d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
+                                                        data-original="#000000" fill="#808080"
+                                                    />
+                                                    <Path
+                                                        d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
+                                                        data-original="#000000" fill="#808080"
+                                                    />
+                                                </Svg>
+                                        </View>
+                                        </Pressable>
+                                    </View>
+                                    <View className={`${queryFocus ? 'hidden' : 'flex'} w-[58%] h-[45%] bg-[#E5E4E2]/50 rounded-md flex-col justify-between items-start py-[4%]`}>
+                                        <View className='w-[100%] pl-[10%] pr-[2%]'>
+                                            <Text className='font-extralight text-lg'>Want to tailor your CV to be Job specific, Hit me!</Text>
+                                        </View>
+                                        <View className='w-[40%] aspect-square'>
+                                            <LottieView source={require('../RemUpload/cv.json')} autoPlay loop={true} style={{ width: '100%', height: '100%' }} />
+                                        </View>
+                                    </View>
+                                    <View className={`${queryFocus ? 'hidden' : 'flex'} w-[38%] h-[45%] bg-[#E5E4E2]/50 rounded-md flex-col justify-between items-start pt-[4%] pb-[5%]`}>
+                                        <View className='w-[100%] pl-[10%] pr-[2%]'>
+                                            <Text className='font-extralight text-lg'>Preparing for an interview!</Text>
+                                        </View>
+                                        <View className='w-[50%] aspect-square'>
+                                            <LottieView source={require('../RemUpload/interview.json')} autoPlay loop={true} style={{ width: '100%', height: '100%' }} />
+                                        </View>
+                                    </View>
                                 </View>
                             </View>
-                            <View className='flex w-[38%] h-[45%] bg-[#E5E4E2]/50 rounded-md flex-col justify-between items-start pt-[4%] pb-[5%]'>
-                                <View className='w-[100%] pl-[10%] pr-[2%]'>
-                                    <Text className='font-extralight text-lg'>Preparing for an interview!</Text>
-                                </View>
-                                <View className='w-[50%] aspect-square'>
-                                    <LottieView source={require('../RemUpload/interview.json')} autoPlay loop={true} style={{ width: '100%', height: '100%' }} />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <View className='flex flex-col justify-between items-center w-[95%] aspect-[1/0.38] border border-double rounded-3xl'>
-                        <TextInput className='text-lg flex placeholder:text-start w-[100%] h-[50%] px-[5%]' placeholder="Ask Anything" onFocus={handleFocus} onBlur={() => setQuery(false)} />
+                        :
+                            <View className='w-[100%] h-[80%]'></View>
+                        }
+                    </ScrollView>
+                    <View className={`${queryFocus ? 'w-[100%] h-[15vh]' : 'w-[90%] h-[15vh]'} flex flex-col justify-between items-start border border-double rounded-3xl`}>
+                        <TextInput className={`text-lg placeholder:text-start ${queryFocus ? 'w-[100%]' : 'w-[90vw]'}  h-[50%] px-[5%]`} placeholder="Ask Anything..." value={inputText} onChangeText={(text) => setInputText(text)} onFocus={handleFocus} onBlur={noFocus} />
                         <View className='flex flex-row justify-between items-center w-[100%] h-[50%] px-[4%]'>
                             <View className='w-[70%] h-[70%] flex flex-row gap-x-[4vw] items-center'>
                                 <View className='w-[10%] aspect-square'>
@@ -119,6 +154,14 @@ export default function Homepage() {
                                     <Text className='text-lg font-light'>Include Link</Text>
                                 </View>
                             </View>
+                            <Pressable className='w-[10%] aspect-square' onPress={sendPrompt}>
+                                <Svg viewBox="0 0 24 24">
+                                    <Path
+                                        d="M12.815 12.197l-7.532 1.256a.5.5 0 00-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 000-1.342l-18-9c-.614-.307-1.283.303-1.035.943l2.598 6.957a.5.5 0 00.386.319l7.532 1.255a.2.2 0 010 .394z"
+                                        data-original="#000000" fill="#808080"
+                                    />
+                                </Svg>
+                            </Pressable>
                         </View>
                     </View>
                 </KeyboardAvoidingView>
