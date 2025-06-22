@@ -52,12 +52,20 @@ auth.get('/verify/:token', async (req, res) => {
   try {
     const { token } =  req.params;
     const verifying = jwt.verify(token, process.env.SECRET_KEY);
-    const newUser = new userModels({firstName: verifying.firstname, lastName: verifying.lastname, email: verifying.email, career: verifying.career, password: verifying.password});
-    await newUser.save();
-    res.render("verified", {
-      title: "Email Verified",
-      message: "Your email has been confirmed succesfully"
-    });
+    const exist = await userModels.findOne({email: verifying.email});
+    if (exist === null) {
+      const newUser = new userModels({firstName: verifying.firstname, lastName: verifying.lastname, email: verifying.email, career: verifying.career, password: verifying.password});
+      await newUser.save();
+      res.render("verified", {
+        title: "Email Verified",
+        message: "Your email has been confirmed succesfully"
+      });
+    } else {
+      res.render("verified", {
+        title: "Email Verified",
+        message: "Your email has been confirmed succesfully"
+      });
+    }
   } catch(e) {
     if (e.name === 'JsonWebTokenError') {
       res.json({verification: false, message: "Token is being manipulated"});
