@@ -21,8 +21,8 @@ dotenv.config();
 
 journal.post('/', async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body.data));
-    res.send(JSON.stringify(req.body.data));
+    console.log(JSON.stringify(req.body));
+    res.send(JSON.stringify(req.body));
   } catch(e) {
     res.send('failed');
   }
