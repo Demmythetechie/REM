@@ -1,6 +1,7 @@
 import LottieView from 'lottie-react-native';
 import React, { useState, useEffect } from 'react';
 import Svg, { G, Path, Circle } from 'react-native-svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, Button, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import axios from 'axios';
 
@@ -44,13 +45,12 @@ export default function Homepage() {
             }
             setUserMessage(data);
             setInputText("");
-            /*
-            await axios.post('', data, {
+            const response = await JSON.parse(AsyncStorage.getItem('signinData'));
+            await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
                 headers: {
-                    Authorization: 'Bearer token', // optional
+                    Authorization: `Bearer ${response.headers['Authorization']}`, // optional
                 }
             });
-            */
         }
     }
 

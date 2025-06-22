@@ -20,7 +20,12 @@ dotenv.config();
 })();
 
 journal.post('/', async (req, res) => {
-    console.log(JSON.stringify(res.data));
+  try {
+    console.log(JSON.stringify(req.data));
+    res.send(JSON.stringify(req.data));
+  } catch(e) {
+    res.send('failed');
+  }
 });
 
 export default journal;
