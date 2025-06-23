@@ -21,11 +21,27 @@ dotenv.config();
 
 journal.post('/', async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body));
-    console.log(JSON.stringify(req.headers));
-    res.send(JSON.stringify(req.body));
+    //Authentication using JWT token
+    const token = req.headers['authorization'];
+    const cleanToken = token.replace("Bearer ", "");
+    const userInfo = jwt.verify(cleanToken, process.env.SIGN_IN_SECRET_KEY);
+    console.log("Pass 1 token verified");
+    const exist = await userModels.findOne({email: userInfo.email});
+    console.log("pass 2 Database check");
+    if (exist === null) {
+      res.json({"authentication": false, message: "This user does not exist"});
+    } else {
+      if (userInfo.password === exist.password) {
+        console.log("works");
+        res.json({"authentication": true, message: "Works just fine"});
+      } else {
+        console.log("Not working");
+        res.json({"authentication": false, message: "This token is probably expired"});
+      }
+    }
   } catch(e) {
     res.send('failed');
+    console.log("failed");
   }
 });
 

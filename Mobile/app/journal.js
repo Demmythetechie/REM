@@ -50,7 +50,7 @@ export default function Homepage() {
                 await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${response.headers['Authorization']}` // optional
+                        Authorization: `${response.headers['authorization']}` // optional
                     }
                 })
             } catch(e) {
