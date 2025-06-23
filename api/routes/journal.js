@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import userModels from '../models/user.js';
@@ -22,6 +22,7 @@ dotenv.config();
 journal.post('/', async (req, res) => {
   try {
     console.log(JSON.stringify(req.body));
+    console.log(JSON.stringify(req.headers));
     res.send(JSON.stringify(req.body));
   } catch(e) {
     res.send('failed');

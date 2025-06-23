@@ -36,21 +36,40 @@ export default function Homepage() {
 
     async function sendPrompt() {
         if (inputText.trim() !== '') {
-            setSent(true);
+            try {
+                setSent(true);
+                const data = {
+                    sender: "User",
+                    message: inputText,
+                    link: [],
+                    file: []
+                }
+                setUserMessage(data);
+                setInputText("");
+                const response = JSON.parse(await AsyncStorage.getItem('signinData'));
+                await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${response.headers['Authorization']}` // optional
+                    }
+                })
+            } catch(e) {
+                const dat = {
+                    sender: "User",
+                    message: JSON.stringify(e.message),
+                    link: [],
+                    file: []
+                }
+                setUserMessage(dat);
+            }
+        } else {
             const data = {
                 sender: "User",
-                message: inputText,
+                message: "not working",
                 link: [],
                 file: []
             }
             setUserMessage(data);
-            setInputText("");
-            const response = await JSON.parse(AsyncStorage.getItem('signinData'));
-            await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
-                headers: {
-                    Authorization: `Bearer ${response.headers['Authorization']}`, // optional
-                }
-            });
         }
     }
 
