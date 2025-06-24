@@ -5,7 +5,7 @@ function date() {
   const month = String(now.getMonth() + 1).padStart(2, '0');  // "01" to "12"
   const year = now.getFullYear();                             // e.g. 2025
 
-  const formatted = `${day}${month}${year}`;
+  const formatted = `${day}${month}${year}`; //24062025
   return formatted;
 }
 

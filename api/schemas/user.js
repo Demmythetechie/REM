@@ -16,8 +16,33 @@ const userSchemas = new Schema({
 
   // Accepts any array (you can restrict further if needed)
   journal: {
-    type: Array,
-    default: []
+    type: [
+      {
+        chat_id: String,
+        messages: {
+          type: [
+            {
+              sender: String,
+              message: String,
+              images: {
+                type: [String],
+                default: []
+              },
+              links: {
+                type: [String],
+                default: []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}, {
+  query: {
+    emptyJournal() {
+      return this.where('journal').equals(undefined);
+    }
   }
 });
 

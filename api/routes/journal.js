@@ -27,7 +27,7 @@ journal.post('/', async (req, res) => {
     const cleanToken = token.replace("Bearer ", "");
     const userInfo = jwt.verify(cleanToken, process.env.SIGN_IN_SECRET_KEY);
     console.log("Pass 1 token verified");
-    const exist = await userModels.findOne({email: userInfo.email}).select('email password firstName lastName');
+    const exist = await userModels.findOne({email: userInfo.email}).select('email password');
     console.log("pass 2 Database check");
     if (exist === null) {
       res.json({"authentication": false, message: "This user does not exist"});
@@ -36,7 +36,7 @@ journal.post('/', async (req, res) => {
         console.log("works");
         const journalExist = await userModels.findOne()
         .where('email').equals(userInfo.email)
-        .where('journal').equals([]).select('-_id email journal');
+        .emptyJournal().select('-_id email journal');
         if (journalExist) {
           console.log("journal exist");
           console.log(journalExist);
