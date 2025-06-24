@@ -2,6 +2,7 @@ import express, { json } from "express";
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import userModels from '../models/user.js';
+import { date } from "../utility.js";
 
 const journal = express.Router();
 
@@ -26,13 +27,32 @@ journal.post('/', async (req, res) => {
     const cleanToken = token.replace("Bearer ", "");
     const userInfo = jwt.verify(cleanToken, process.env.SIGN_IN_SECRET_KEY);
     console.log("Pass 1 token verified");
-    const exist = await userModels.findOne({email: userInfo.email});
+    const exist = await userModels.findOne({email: userInfo.email}).select('email password firstName lastName');
     console.log("pass 2 Database check");
     if (exist === null) {
       res.json({"authentication": false, message: "This user does not exist"});
     } else {
       if (userInfo.password === exist.password) {
         console.log("works");
+        const journalExist = await userModels.findOne()
+        .where('email').equals(userInfo.email)
+        .emptyJournal().select('email');
+        if (journalExist) {
+
+        } else {
+          console.log('journal does not exist, new user');
+          const currentDate = date();
+          const journalOpenedForToday = {
+            chat_id: currentDate,
+            messages: [
+              {
+                sender: req.body.sender,
+                message: req.body.message
+              }
+            ] 
+          }
+        }
+
         res.json({"authentication": true, message: "Works just fine"});
       } else {
         console.log("Not working");
