@@ -39,6 +39,7 @@ journal.post('/', async (req, res) => {
         .emptyJournal().select('email');
         if (journalExist) {
           console.log("journal exist");
+          console.log(journalExist);
         } else {
           console.log('journal does not exist, new user');
           const currentDate = date();
