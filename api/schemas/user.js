@@ -22,7 +22,7 @@ const userSchemas = new Schema({
 }, {
   query: {
     emptyJournal() {
-      return this.where('journal').size(0);
+      return this.where('journal').equals([]);
     }
   }
 });
