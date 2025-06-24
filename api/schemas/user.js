@@ -19,12 +19,6 @@ const userSchemas = new Schema({
     type: Array,
     default: []
   }
-}, {
-  query: {
-    emptyJournal() {
-      return this.where('journal').equals([]);
-    }
-  }
 });
 
 export default userSchemas;
