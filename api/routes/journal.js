@@ -36,7 +36,7 @@ journal.post('/', async (req, res) => {
         console.log("works");
         const journalExist = await userModels.findOne()
         .where('email').equals(userInfo.email)
-        .emptyJournal().select('email');
+        .emptyJournal().select('email journal');
         if (journalExist) {
           console.log("journal exist");
           console.log(journalExist);
