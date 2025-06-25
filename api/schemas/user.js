@@ -36,12 +36,13 @@ const userSchemas = new Schema({
           ]
         }
       }
-    ]
+    ],
+    default: []
   }
 }, {
   query: {
     emptyJournal() {
-      return this.where('journal').equals(undefined);
+      return this.where('journal').size(0);
     }
   }
 });
