@@ -39,17 +39,38 @@ journal.post('/', async (req, res) => {
         .emptyJournal().select('-_id email journal');
         if (journalExist) {
           console.log("journal exist");
-          console.log(journalExist);
+          {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
+            console.log('The days chat has been created, add to messages of that day')
+          :
+            console.log('create todays date')
+          }
+          /*
+          await userModels.updateOne(
+            {
+              email: userInfo.email,
+              "journal.chat_id": date(), // replace with your actual chat_id
+            },
+            {
+              $push: {
+                "journal.$.messages": {
+                  sender: req.body.sender,
+                  message: req.body.message,
+                  images: req.body.images, // add images if any
+                  links: req.body.links   // add links if any
+                }
+              }
+            }
+          );
+          */
         } else {
           console.log(req.body);
           console.log('journal does not exist, new user');
-          const currentDate = date();
           await userModels.updateOne(
             { email: userInfo.email },
             {
               $push: {
                 journal: {
-                  chat_id: currentDate,
+                  chat_id: date(),
                   messages: [
                     {
                       sender: req.body.sender,
