@@ -41,19 +41,28 @@ journal.post('/', async (req, res) => {
           console.log("journal exist");
           console.log(journalExist);
         } else {
+          console.log(req.body);
           console.log('journal does not exist, new user');
           const currentDate = date();
-          const journalOpenedForToday = {
-            chat_id: currentDate,
-            messages: [
-              {
-                sender: req.body.sender,
-                message: req.body.message
+          await userModels.updateOne(
+            { email: userInfo.email },
+            {
+              $push: {
+                journal: {
+                  chat_id: currentDate,
+                  messages: [
+                    {
+                      sender: req.body.sender,
+                      message: req.body.message,
+                      images: req.body.images,
+                      links: req.body.links
+                    }
+                  ]
+                }
               }
-            ] 
-          }
+            }
+          );
         }
-
         res.json({"authentication": true, message: "Works just fine"});
       } else {
         console.log("Not working");
