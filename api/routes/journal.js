@@ -34,9 +34,10 @@ journal.post('/', async (req, res) => {
     } else {
       if (userInfo.password === exist.password) {
         console.log("works");
-        const journalExist = await userModels.findOne()
+        const journalExist = await userModels.find()
         .where('email').equals(userInfo.email)
-        .emptyJournal().select('-_id email journal');
+        .where('journal.chat_id').exists(true).select('journal.chat_id');
+        console.log(journalExist);
         if (journalExist) {
           console.log("journal exist");
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?

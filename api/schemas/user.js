@@ -38,12 +38,6 @@ const userSchemas = new Schema({
       }
     ]
   }
-}, {
-  query: {
-    emptyJournal() {
-      return this.where('journal').equals(undefined);
-    }
-  }
 });
 
 export default userSchemas;
