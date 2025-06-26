@@ -37,8 +37,9 @@ journal.post('/', async (req, res) => {
         const journalExist = await userModels.find()
         .where('email').equals(userInfo.email)
         .where('journal.chat_id').exists(true).select('journal.chat_id');
+        console.log(typeof journalExist);
         console.log(journalExist);
-        if (journalExist.length === 0) {
+        if (journalExist.length !== 0) {
           console.log("journal exist");
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
             console.log('The days chat has been created, add to messages of that day')
