@@ -44,28 +44,12 @@ journal.post('/', async (req, res) => {
         if (journalExist.length !== 0) {
           console.log("journal exist");
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
-            console.log('The days chat has been created, add to messages of that day')
+            // Update chat if already created and still within 24 hrs(still within the same day)
+            await updateChat(userInfo, date(), req)
           :
+            // This creates a new chat but other chats exist for previous days already (not that it is empty)
             await createChat(userInfo, date(), req)
           }
-          /*
-          await userModels.updateOne(
-            {
-              email: userInfo.email,
-              "journal.chat_id": date(), // replace with your actual chat_id
-            },
-            {
-              $push: {
-                "journal.$.messages": {
-                  sender: req.body.sender,
-                  message: req.body.message,
-                  images: req.body.images, // add images if any
-                  links: req.body.links   // add links if any
-                }
-              }
-            }
-          );
-          */
         } else {
           console.log(req.body);
           console.log('journal does not exist, new user');
@@ -83,6 +67,22 @@ journal.post('/', async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+//REUSABLE BLOCKS
+
+
+// This function Create the chat of the day database for the user------------------------------------------START
 async function createChat(userInfo, date, request) {
   await userModels.updateOne(
     { email: userInfo.email },
@@ -103,5 +103,28 @@ async function createChat(userInfo, date, request) {
     }
   );
 }
+//------------------------------------------------------------------------------------------------------END
+
+
+// This function Updates the chat of the day database for the user------------------------------------------START
+async function updateChat(userInfo, date, request) {
+  await userModels.updateOne(
+    {
+      email: userInfo.email,
+      "journal.chat_id": date
+    },
+    {
+      $push: {
+        "journal.$.messages": {
+          sender: request.body.sender,
+          message: request.body.message,
+          links: request.body.links,
+          files: request.body.file
+        }
+      }
+    }
+  );
+}
+//-----------------------------------------------------------------------------------------------------END
 
 export default journal;
