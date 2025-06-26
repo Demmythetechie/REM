@@ -46,7 +46,7 @@ journal.post('/', async (req, res) => {
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
             console.log('The days chat has been created, add to messages of that day')
           :
-            console.log('create todays date')
+            await createChat(userInfo, date(), req)
           }
           /*
           await userModels.updateOne(
@@ -69,24 +69,7 @@ journal.post('/', async (req, res) => {
         } else {
           console.log(req.body);
           console.log('journal does not exist, new user');
-          await userModels.updateOne(
-            { email: userInfo.email },
-            {
-              $push: {
-                journal: {
-                  chat_id: date(),
-                  messages: [
-                    {
-                      sender: req.body.sender,
-                      message: req.body.message,
-                      links: req.body.link,
-                      files: req.body.file
-                    }
-                  ]
-                }
-              }
-            }
-          );
+          await createChat(userInfo, date(), req); 
         }
         res.json({"authentication": true, message: "Works just fine"});
       } else {
@@ -99,5 +82,26 @@ journal.post('/', async (req, res) => {
     console.log("failed");
   }
 });
+
+async function createChat(userInfo, date, request) {
+  await userModels.updateOne(
+    { email: userInfo.email },
+    {
+      $push: {
+        journal: {
+          chat_id: date,
+          messages: [
+            {
+              sender: request.body.sender,
+              message: request.body.message,
+              links: request.body.link,
+              files: request.body.file
+            }
+          ]
+        }
+      }
+    }
+  );
+}
 
 export default journal;
