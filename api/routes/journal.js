@@ -34,11 +34,14 @@ journal.post('/', async (req, res) => {
     } else {
       if (userInfo.password === exist.password) {
         console.log("works");
-        const journalExist = await userModels.findOne()
+
+        //This gets all the chats (chat_id) that have been created by the user
+        const journalExist = await userModels.find()
         .where('email').equals(userInfo.email)
-        .where('journal').size(0).select('-_id email journal');
-        console.log(journalExist);
-        if (journalExist) {
+        .where('journal.chat_id').exists(true).select('journal.chat_id');
+
+        //This condition tests for if the user has created a chat before or not.
+        if (journalExist.length !== 0) {
           console.log("journal exist");
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
             console.log('The days chat has been created, add to messages of that day')
@@ -76,8 +79,8 @@ journal.post('/', async (req, res) => {
                     {
                       sender: req.body.sender,
                       message: req.body.message,
-                      images: req.body.images,
-                      links: req.body.links
+                      links: req.body.link,
+                      files: req.body.file
                     }
                   ]
                 }

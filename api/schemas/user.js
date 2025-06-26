@@ -24,11 +24,11 @@ const userSchemas = new Schema({
             {
               sender: String,
               message: String,
-              images: {
+              links: {
                 type: [String],
                 default: []
               },
-              links: {
+              files: {
                 type: [String],
                 default: []
               }
