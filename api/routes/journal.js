@@ -34,12 +34,11 @@ journal.post('/', async (req, res) => {
     } else {
       if (userInfo.password === exist.password) {
         console.log("works");
-        const journalExist = await userModels.find()
+        const journalExist = await userModels.findOne()
         .where('email').equals(userInfo.email)
-        .where('journal.chat_id').exists(true).select('journal.chat_id');
-        console.log(typeof journalExist);
+        .where('journal').size(0).select('-_id email journal');
         console.log(journalExist);
-        if (journalExist.length !== 0) {
+        if (journalExist) {
           console.log("journal exist");
           {(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.chat_id')) ?
             console.log('The days chat has been created, add to messages of that day')
