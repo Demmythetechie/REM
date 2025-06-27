@@ -58,7 +58,7 @@ journal.post('/', async (req, res) => {
         // This finds the last chat of the user and then update the user prompt with REM's response
         const lastChat = await userModels.find()
         .where('email').equals(userInfo.email)
-        .where('journal.chat_id').exists(true).select('journal.chat_id');
+        .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
         console.log(lastChat);
         await userModels.updateOne(
           {
