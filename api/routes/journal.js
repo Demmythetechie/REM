@@ -55,18 +55,19 @@ journal.post('/', async (req, res) => {
           await createChat(userInfo, date(), req); 
         }
 
-        // This finds the last chat of the user and then update the user prompt with REM's response
+        // This finds the last chat of the user
         const lastChat = await userModels.find()
         .where('email').equals(userInfo.email)
         .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
         const dt = lastChat[lastChat.length - 1];
         const dt2 = dt.journal;
-        const dt3 = dt2[0].chat_id
-        console.log(dt3);
+        const lastChatId = dt2[0].chat_id;
+
+        //This block of code then updates the user's last chat with REM's response
         await userModels.updateOne(
           {
             email: userInfo.email,
-            "journal.chat_id": lastChat[lastChat.length - 1]
+            "journal.chat_id": lastChatId
           },
           {
             $push: {
