@@ -51,11 +51,32 @@ journal.post('/', async (req, res) => {
             await createChat(userInfo, date(), req)
           }
         } else {
-          console.log(req.body);
           console.log('journal does not exist, new user');
           await createChat(userInfo, date(), req); 
         }
-        res.json({"authentication": true, message: "Works just fine"});
+
+        // This finds the last chat of the user and then update the user prompt with REM's response
+        const lastChat = await userModels.find()
+        .where('email').equals(userInfo.email)
+        .where('journal.chat_id').exists(true).select('journal.chat_id');
+        console.log(lastChat);
+        await userModels.updateOne(
+          {
+            email: userInfo.email,
+            "journal.chat_id": lastChat[lastChat.length - 1]
+          },
+          {
+            $push: {
+              "journal.$.messages": {
+                sender: "REM",
+                message: "The user's prompt has been responded to",
+                links: [],
+                files: []
+              }
+            }
+          }
+        );
+        res.json({});
       } else {
         console.log("Not working");
         res.json({"authentication": false, message: "This token is probably expired"});
