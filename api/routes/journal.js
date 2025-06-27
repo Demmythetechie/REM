@@ -60,8 +60,9 @@ journal.post('/', async (req, res) => {
         .where('email').equals(userInfo.email)
         .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
         const dt = lastChat[lastChat.length - 1];
-        console.log(dt);
-        console.log(dt.journal);
+        const dt2 = dt.journal;
+        const dt3 = dt2[0].chat_id
+        console.log(dt3);
         await userModels.updateOne(
           {
             email: userInfo.email,
