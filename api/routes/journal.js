@@ -60,7 +60,9 @@ journal.post('/', async (req, res) => {
         .where('email').equals(userInfo.email)
         .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
         const dt = lastChat[lastChat.length - 1];
+        console.log(dt);
         const dt2 = dt.journal;
+        console.log(dt2);
         const lastChatId = dt2[0].chat_id;
 
         //This block of code then updates the user's last chat with REM's response
