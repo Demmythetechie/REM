@@ -20,6 +20,7 @@ export default function Homepage() {
     //sent is false by default, show the new chat ui
 
     const [temp, setTemp] = useState(null);
+    const [messages, setMessages] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -29,7 +30,23 @@ export default function Homepage() {
                     Authorization: `${token.headers['authorization']}`
                 }
             });
-            setTemp(JSON.stringify(res.data));
+            setUserMessage('works') // Remove this soon
+
+            if(res.data.preload) {
+                setSent(res.data.preload);
+                setMessages((res.data.messages).journal[0].messages);
+                setTemp(JSON.stringify((res.data.messages).journal[0].messages));
+            } else if(!res.data.userExists) {
+                setTemp(JSON.stringify(res.data));
+            } else if(!res.data.verification) {
+                setTemp(JSON.stringify(res.data));
+            } else if(!res.data.expired) {
+                setTemp(JSON.stringify(res.data));
+            } else if(res.data.server === 0) {
+                setTemp(JSON.stringify(res.data));
+            }
+            setSent(false);
+            setMessages(null);
         })();
     }, []);
 
@@ -68,15 +85,22 @@ export default function Homepage() {
                     link: [],
                     file: []
                 }
-                setUserMessage(data);
+                if (messages === null) {
+                    setMessages([data]);
+                } else {
+                    const tempMessage = messages;
+                    tempMessage.push(data);
+                    setMessages(tempMessage);
+                }
                 setInputText("");
                 const response = JSON.parse(await AsyncStorage.getItem('signinData'));
-                await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
+                const res = await axios.post('https://rem-application-programming-interface.onrender.com/journal', data, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `${response.headers['authorization']}` // optional
                     }
-                })
+                });
+                setMessages(res.data);
             } catch(e) {
                 const dat = {
                     sender: "User",
@@ -84,7 +108,7 @@ export default function Homepage() {
                     link: [],
                     file: []
                 }
-                setUserMessage(dat);
+                setMessages([dat]);
             }
         } else {
             const data = {
@@ -170,9 +194,11 @@ export default function Homepage() {
                             </View>
                         :
                             <View className={`flex w-[100%] h-[80%] flex-col items-start justify-start gap-y-[3%]`}>
-                                <View className='w-[65vw] rounded-lg border ml-[26%] px-[4%] py-[3%]'>
-                                    <Text className='text-lg font-light'>{userMessage.message}</Text>
-                                </View>
+                                {messages && messages.map((msg, index)=>(
+                                    <View key={index} className={`w-[65vw] ${msg.sender === "User" ? 'ml-[26%] px-[4%] py-[3%] rounded-lg border' : 'mr-[26%] py-[5%]'}`}>
+                                        <Text className='text-lg font-light'>{msg.message}</Text>
+                                    </View>
+                                ))}
                             </View>
                         }
                     </ScrollView>
@@ -218,11 +244,23 @@ export default function Homepage() {
                             </Pressable>
                         </View>
                     </View>
+                    {/*
                     <View className='absolute w-[90%] h-[80%]'>
                         <Text className='text-lg font-medium'>{temp}</Text>
                     </View>
+                    */}
                 </KeyboardAvoidingView>
             </View>
         </TouchableWithoutFeedback>
     );
 }
+
+
+/*
+
+<View className={`flex w-[100%] h-[80%] flex-col items-start justify-start gap-y-[3%]`}>
+                                <View className='w-[65vw] rounded-lg border ml-[26%] px-[4%] py-[3%]'>
+                                    <Text className='text-lg font-light'>{userMessage.message}</Text>
+                                </View>
+                            </View>
+*/

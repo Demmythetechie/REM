@@ -122,6 +122,7 @@ journal.post('/', async (req, res) => {
           }
         );
         const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages');
+        console.log(response);
         res.json(response);
       } else {
         res.json({"authentication": false, message: "This token is probably expired"});
