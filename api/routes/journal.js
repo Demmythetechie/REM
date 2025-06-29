@@ -27,9 +27,12 @@ journal.get('/load', async (req, res) => {
     const userInfo = jwt.verify(cleanToken, process.env.SIGN_IN_SECRET_KEY);
     console.log("Pass 1 token verified");
     const exist = await userModels.findOne().where('email').equals(userInfo.email).where('password').equals(userInfo.password).select('email -_id');
-    if(exist === null) {
+    console.log("Pass 1 database verified");
+    if (exist === null) {
+      console.log("This user does not exist");
       res.json({"userExists": false, message: "This user does not exist"})
     } else {
+      console.log("This user exist");
       // This finds all the chats of the user
       const chat = await userModels.find()
         .where('email').equals(userInfo.email)
@@ -37,9 +40,12 @@ journal.get('/load', async (req, res) => {
       const dt = lastChat[lastChat.length - 1];
       console.log(dt);
       const allChat = dt.journal;
+      console.log("Pass 2 database verified");
 
       //This gets the user chat for that day
       const lastChat = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.messages');
+      console.log("Pass 3 database verified");
+      console.log(lastChat);
       res.json({preload: lastChat ? true : false, chatList: allChat, messages: lastChat})
     }
   } catch(e) {
