@@ -63,7 +63,7 @@ journal.post('/', async (req, res) => {
         console.log(dt);
         const dt2 = dt.journal;
         console.log(dt2);
-        const lastChatId = dt2[0].chat_id;
+        const lastChatId = dt2[dt2.length - 1].chat_id;
 
         //This block of code then updates the user's last chat with REM's response
         await userModels.updateOne(
