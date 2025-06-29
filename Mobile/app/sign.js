@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import axios from 'axios';
@@ -10,8 +10,16 @@ import Svg, { Circle, Rect, Defs, ClipPath, Path, G, Line } from 'react-native-s
 import LottieView from 'lottie-react-native';
 
 export default function Sign() {
+
+    //The error animation
+    const animee = useRef(null);
     
+
     const [regexError, setError] = useState(null);
+
+    //This is for successfully done task
+    const [successTask, setSuccessTask] = useState(null);
+
     // This is the state for handling signin response
     const [resIn, setResIn] = useState(null);
 
@@ -46,6 +54,9 @@ export default function Sign() {
 
     //Show and Hide for password in sign in
     const [show_hide, setS_H] = useState(true);
+
+
+    // This part of the code is for handling the submit button--------------------------------------------------------START
 
     async function handleSubmit () {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -99,7 +110,7 @@ export default function Sign() {
             } else if(form.password !== form.confirmPassword){
                 setError('Oops! Your passwords don’t match. Please check and try again.');
             } else {
-                setError(null)
+                setError(null);
                 // all correct parameter
                 const data = {
                     "firstname": form.first,
@@ -109,6 +120,7 @@ export default function Sign() {
                     "password": form.password
                 }
                 try {
+                    setConnecting(false);
                     AsyncStorage.setItem('signupData', JSON.stringify(
                         await axios.post('https://rem-application-programming-interface.onrender.com/authentication/signup', data, {
                             headers: {
@@ -120,6 +132,7 @@ export default function Sign() {
                     const response = JSON.parse(await AsyncStorage.getItem('signupData'));
                     if (response.data.signup) {
                         SetAuth(true);
+                        setSuccessTask("Your account has been successfully created! 🎉\nPlease check your email to verify your account.");
                     } else if(response.data.userExist) {
                         setError(response.data.message);
                     } else if (response.data.server === 0) {
@@ -131,6 +144,7 @@ export default function Sign() {
             }
         }
     };
+    // This is where it ends --------------------------------------------------------------------------------------------------------END
 
     function responsiveness() {
         setSize(true);
@@ -155,6 +169,10 @@ export default function Sign() {
     // This function is for hiding the error
     function closeError() {
         setError(null);
+    }
+
+    function closeMessage() {
+        setSuccessTask(null);
     }
 
     return (
@@ -462,11 +480,29 @@ export default function Sign() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View className={`${typeof regexError === "string" ? 'flex' : 'hidden'} flex-row absolute w-[85%] h-[10%] rounded-xl bg-red-400 justify-between items-start py-[2%] px-[4%] top-[8%]`}>
+                <View className={`${typeof regexError === "string" ? 'flex' : 'hidden'} flex-row absolute w-[85%] h-[13%] rounded-xl bg-red-400 justify-between items-start py-[2%] px-[2%] top-[8%] mr-[0%]`} ref={animee}>
                     <View className='w-[90%] h-[100%] flex justify-center pl-[2%]'>
-                        <Text className='text-white'>{regexError}</Text>
+                        <Text className='text-white text-[4vw] font-light'>{regexError}</Text>
                     </View>
                     <TouchableOpacity className='w-[7%] aspect-square' onPress={closeError}>
+                        <Svg
+                            viewBox="0 0 24 24"
+                        >
+                            <Path
+                                fillRule="evenodd"
+                                d="M5.293 5.293a1 1 0 011.414 0L12 10.586l5.293-5.293a1 1 0 111.414 1.414L13.414 12l5.293 5.293a1 1 0 01-1.414 1.414L12 13.414l-5.293 5.293a1 1 0 01-1.414-1.414L10.586 12 5.293 6.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                                data-original="#000000"
+                                fill="#fff"
+                            />
+                        </Svg>
+                    </TouchableOpacity>
+                </View>
+                <View className={`${typeof successTask === "string" ? 'flex' : 'hidden'} flex-row absolute w-[85%] h-[13%] rounded-xl bg-green-600 justify-between items-start py-[2%] px-[2%] top-[8%] mr-[0%]`}>
+                    <View className='w-[90%] h-[100%] flex justify-center pl-[2%]'>
+                        <Text className='text-white text-[4vw] font-light'>{successTask}</Text>
+                    </View>
+                    <TouchableOpacity className='w-[7%] aspect-square' onPress={closeMessage}>
                         <Svg
                             viewBox="0 0 24 24"
                         >

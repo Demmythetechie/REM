@@ -6,8 +6,9 @@ import { View, Text, Button, TextInput, Keyboard, TouchableWithoutFeedback, Touc
 import axios from 'axios';
 
 
-export default function Homepage() {
 
+
+export default function Homepage() {
 
     const [queryFocus, setQuery] = useState(false);
     const [emergency, setEmergency] = useState(false);
@@ -16,6 +17,29 @@ export default function Homepage() {
     //User Prompt input
     const [inputText, setInputText] = useState('');
     const [sent, setSent] = useState(false);
+    //sent is false by default, show the new chat ui
+
+    const [temp, setTemp] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            const token = JSON.parse(await AsyncStorage.getItem('signinData'));
+            const res = await axios.get('https://rem-application-programming-interface.onrender.com/journal/load', {
+                headers: {
+                    Authorization: `${token.headers['authorization']}`
+                }
+            });
+            setTemp(JSON.stringify(res.data));
+        })();
+    }, []);
+
+    /*
+    const [preload, setPreload] = useState(null);
+
+    useEffect(() => {
+        
+    },  [preload]);
+    */
 
     // User message
     const [userMessage, setUserMessage] = useState(null);
@@ -96,34 +120,34 @@ export default function Homepage() {
                                     <View className={`flex w-[100%] h-[45%] rounded-md flex-col justify-between`}>
                                         <Text className='text-lg font-light'>Coming Up!!!</Text>
                                         <Pressable className='w-[100%] h-[35%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-green-600'>
-                                        <Text className='text-lg font-light text-white'>Apply for the Microsoft...</Text>
-                                        <View className='w-[10%] aspect-square'>
-                                                <Svg viewBox="0 0 24 24">
-                                                    <Path
-                                                        d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
-                                                        data-original="#ffffff" fill="#fff"
-                                                    />
-                                                    <Path
-                                                        d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
-                                                        data-original="#ffffff" fill="#fff"
-                                                    />
-                                                </Svg>
-                                        </View>
+                                            <Text className='text-lg font-light text-white'>Apply for the Microsoft...</Text>
+                                            <View className='w-[10%] aspect-square'>
+                                                    <Svg viewBox="0 0 24 24">
+                                                        <Path
+                                                            d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
+                                                            data-original="#ffffff" fill="#fff"
+                                                        />
+                                                        <Path
+                                                            d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
+                                                            data-original="#ffffff" fill="#fff"
+                                                        />
+                                                    </Svg>
+                                            </View>
                                         </Pressable>
                                         <Pressable className='w-[90%] h-[30%] rounded-xl flex flex-row justify-between items-center px-[5%] bg-[#E5E4E2]/50'>
-                                        <Text className='text-lg font-light'>Apply for the Microsoft...</Text>
-                                        <View className='w-[10%] aspect-square'>
-                                                <Svg viewBox="0 0 24 24">
-                                                    <Path
-                                                        d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
-                                                        data-original="#000000" fill="#808080"
-                                                    />
-                                                    <Path
-                                                        d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
-                                                        data-original="#000000" fill="#808080"
-                                                    />
-                                                </Svg>
-                                        </View>
+                                            <Text className='text-lg font-light'>Apply for the Microsoft...</Text>
+                                            <View className='w-[10%] aspect-square'>
+                                                    <Svg viewBox="0 0 24 24">
+                                                        <Path
+                                                            d="M15 6.5a1 1 0 01-1-1V4h-4v1.5a1 1 0 01-2 0V4c0-1.103.897-2 2-2h4c1.103 0 2 .897 2 2v1.5a1 1 0 01-1 1zm-2.29 8.88a2.191 2.191 0 01-1.48-.02L0 11.62v7.63C0 20.77 1.23 22 2.75 22h18.5c1.52 0 2.75-1.23 2.75-2.75v-7.63z"
+                                                            data-original="#000000" fill="#808080"
+                                                        />
+                                                        <Path
+                                                            d="M24 7.75v2.29l-11.76 3.92c-.08.03-.16.04-.24.04s-.16-.01-.24-.04L0 10.04V7.75C0 6.23 1.23 5 2.75 5h18.5C22.77 5 24 6.23 24 7.75z"
+                                                            data-original="#000000" fill="#808080"
+                                                        />
+                                                    </Svg>
+                                            </View>
                                         </Pressable>
                                     </View>
                                     <View className={`${queryFocus ? 'hidden' : 'flex'} w-[58%] h-[45%] bg-[#E5E4E2]/50 rounded-md flex-col justify-between items-start py-[4%]`}>
@@ -193,6 +217,9 @@ export default function Homepage() {
                                 </Svg>
                             </Pressable>
                         </View>
+                    </View>
+                    <View className='absolute w-[90%] h-[80%]'>
+                        <Text className='text-lg font-medium'>{temp}</Text>
                     </View>
                 </KeyboardAvoidingView>
             </View>

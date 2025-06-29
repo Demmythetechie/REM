@@ -20,6 +20,39 @@ dotenv.config();
   }
 })();
 
+journal.get('/load', async (req, res) => {
+  try {
+    const token = req.headers['authorization'];
+    const cleanToken = token.replace("Bearer ", "");
+    const userInfo = jwt.verify(cleanToken, process.env.SIGN_IN_SECRET_KEY);
+    console.log("Pass 1 token verified");
+    const exist = await userModels.findOne().where('email').equals(userInfo.email).where('password').equals(userInfo.password).select('email -_id');
+    if(exist === null) {
+      res.json({"userExists": false, message: "This user does not exist"})
+    } else {
+      // This finds all the chats of the user
+      const chat = await userModels.find()
+        .where('email').equals(userInfo.email)
+        .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
+      const dt = lastChat[lastChat.length - 1];
+      console.log(dt);
+      const allChat = dt.journal;
+
+      //This gets the user chat for that day
+      const lastChat = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.messages');
+      res.json({preload: lastChat ? true : false, chatList: allChat, messages: lastChat})
+    }
+  } catch(e) {
+    if (e.name === 'JsonWebTokenError') {
+      res.json({verification: false, message: "Token is being manipulated"});
+    } else if(e.name === 'TokenExpiredError') {
+      res.json({expired: false, message: 'Token has expired'});
+    } else {
+      res.json({server: 0, message: e.name});
+    }
+  }
+});
+
 journal.post('/', async (req, res) => {
   try {
     //Authentication using JWT token
@@ -82,7 +115,7 @@ journal.post('/', async (req, res) => {
             }
           }
         );
-        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('messages');
+        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages');
         res.json(response);
       } else {
         res.json({"authentication": false, message: "This token is probably expired"});
