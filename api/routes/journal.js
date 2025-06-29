@@ -82,7 +82,8 @@ journal.post('/', async (req, res) => {
             }
           }
         );
-        res.json({});
+        console.log(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('messages'));
+        res.json(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('messages'));
       } else {
         console.log("Not working");
         res.json({"authentication": false, message: "This token is probably expired"});
