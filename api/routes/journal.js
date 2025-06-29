@@ -30,7 +30,7 @@ journal.post('/', async (req, res) => {
     const exist = await userModels.findOne({email: userInfo.email}).select('email password');
     console.log("pass 2 Database check");
     if (exist === null) {
-      res.json({"authentication": false, message: "This user does not exist"});
+      res.json({"userExists": false, message: "This user does not exist"});
     } else {
       if (userInfo.password === exist.password) {
         console.log("works");
@@ -82,16 +82,20 @@ journal.post('/', async (req, res) => {
             }
           }
         );
-        console.log(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages'));
-        res.json(await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('messages'));
+        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('messages');
+        res.json(response);
       } else {
-        console.log("Not working");
         res.json({"authentication": false, message: "This token is probably expired"});
       }
     }
   } catch(e) {
-    res.send('failed');
-    console.log("failed");
+    if (e.name === 'JsonWebTokenError') {
+      res.json({verification: false, message: "Token is being manipulated"});
+    } else if(e.name === 'TokenExpiredError') {
+      res.json({expired: false, message: 'Token has expired'});
+    } else {
+      res.json({server: 0, message: e.name});
+    }
   }
 });
 
