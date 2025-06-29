@@ -37,7 +37,7 @@ journal.get('/load', async (req, res) => {
       const chat = await userModels.find()
         .where('email').equals(userInfo.email)
         .where('journal.chat_id').exists(true).select('-_id journal.chat_id');
-      const dt = lastChat[lastChat.length - 1];
+      const dt = chat[chat.length - 1];
       console.log(dt);
       const allChat = dt.journal;
       console.log("Pass 2 database verified");
