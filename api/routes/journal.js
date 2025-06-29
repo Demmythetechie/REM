@@ -132,7 +132,7 @@ journal.post('/', async (req, res) => {
     if (e.name === 'JsonWebTokenError') {
       res.json({verification: false, message: "Token is being manipulated"});
     } else if(e.name === 'TokenExpiredError') {
-      res.json({expired: false, message: 'Token has expired'});
+      res.json({expired: true, message: 'Token has expired'});
     } else {
       res.json({server: 0, message: e.name});
     }

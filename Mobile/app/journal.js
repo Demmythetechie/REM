@@ -4,6 +4,7 @@ import Svg, { G, Path, Circle } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, Button, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import axios from 'axios';
+import { router } from 'expo-router';
 
 
 
@@ -30,12 +31,10 @@ export default function Homepage() {
                     Authorization: `${token.headers['authorization']}`
                 }
             });
-            setUserMessage('works') // Remove this soon
 
             if(res.data.preload) {
                 setSent(res.data.preload);
                 setMessages((res.data.messages).journal[0].messages);
-                setTemp(JSON.stringify((res.data.messages).journal[0].messages));
             } else if(!res.data.userExists) {
                 setTemp(JSON.stringify(res.data));
             } else if(!res.data.verification) {
@@ -45,8 +44,6 @@ export default function Homepage() {
             } else if(res.data.server === 0) {
                 setTemp(JSON.stringify(res.data));
             }
-            setSent(false);
-            setMessages(null);
         })();
     }, []);
 
@@ -100,7 +97,15 @@ export default function Homepage() {
                         Authorization: `${response.headers['authorization']}` // optional
                     }
                 });
-                setMessages(res.data);
+
+                if (!res.data.userExists) {
+                    router.push('/signin');
+                } else if (!res.data.verification) {
+                    router.push('/signin');
+                } else if(!res.data.authentication) {
+                    router.push('/signin');
+                }
+                setMessages((res.data.journal[0]).messages);
             } catch(e) {
                 const dat = {
                     sender: "User",
@@ -108,7 +113,13 @@ export default function Homepage() {
                     link: [],
                     file: []
                 }
-                setMessages([dat]);
+                if (messages === null) {
+                    setMessages([dat]);
+                } else {
+                    const tempMessage = messages;
+                    tempMessage.push(dat);
+                    setMessages(tempMessage);
+                }
             }
         } else {
             const data = {
@@ -117,7 +128,13 @@ export default function Homepage() {
                 link: [],
                 file: []
             }
-            setUserMessage(data);
+            if (messages === null) {
+                setMessages([data]);
+            } else {
+                const tempMessage = messages;
+                tempMessage.push(data);
+                setMessages(tempMessage);
+            }
         }
     }
 
