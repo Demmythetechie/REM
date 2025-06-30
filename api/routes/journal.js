@@ -45,7 +45,7 @@ journal.get('/load', async (req, res) => {
       //This gets the user chat for that day
       const lastChat = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.messages -_id');
       console.log("Pass 3 database verified");
-      console.log(lastChat);
+      console.dir(lastChat, { depth: null });
       res.json({preload: lastChat ? true : false, chatList: allChat, messages: lastChat})
     }
   } catch(e) {

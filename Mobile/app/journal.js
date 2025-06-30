@@ -37,6 +37,7 @@ export default function Homepage() {
             if(res.data.preload) {
                 setSent(res.data.preload);
                 setMessages((res.data.messages).journal);
+                setTemp(JSON.stringify((res.data.messages).journal));
             } else if(!res.data.userExists) {
                 setTemp(JSON.stringify(res.data));
             } else if(!res.data.verification) {
@@ -274,11 +275,9 @@ export default function Homepage() {
                         </Pressable>
                     </View>
                 </View>
-                {/*
                 <View className='absolute w-[90%] h-[80%]'>
                     <Text className='text-lg font-medium'>{temp}</Text>
                 </View>
-                */}
             </KeyboardAvoidingView>
         </View>
     );
