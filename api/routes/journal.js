@@ -43,7 +43,7 @@ journal.get('/load', async (req, res) => {
       console.log("Pass 2 database verified");
 
       //This gets the user chat for that day
-      const lastChat = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.messages');
+      const lastChat = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(date()).select('journal.messages -_id');
       console.log("Pass 3 database verified");
       console.log(lastChat);
       res.json({preload: lastChat ? true : false, chatList: allChat, messages: lastChat})
@@ -121,7 +121,7 @@ journal.post('/', async (req, res) => {
             }
           }
         );
-        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages');
+        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages -_id');
         console.log(JSON.stringify(response));
         res.json(response);
       } else {
