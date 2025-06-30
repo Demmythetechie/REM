@@ -125,7 +125,11 @@ journal.post('/', async (req, res) => {
             }
           }
         );
-        const response = await userModels.findOne().where('email').equals(userInfo.email).where('journal.chat_id').equals(lastChatId).select('journal.messages -_id');
+        const response = await userModels.findOne()
+        .where('email').equals(userInfo.email)
+        .where('journal').elemMatch({ chat_id: lastChatId })
+        .select('journal.$ -_id');
+
         console.log(JSON.stringify(response));
         res.json(response);
       } else {
