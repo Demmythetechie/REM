@@ -46,8 +46,8 @@ journal.get('/load', async (req, res) => {
       const lastChat = await userModels.findOne()
       .where('email').equals(userInfo.email)
       .where('journal').elemMatch({ chat_id: date() })
-      .select('journal.$.messages -_id');
-      
+      .select('journal.$ -_id');
+
       console.log("Pass 3 database verified");
       console.log(JSON.stringify(lastChat, null, 2));
       res.json({preload: lastChat ? true : false, chatList: allChat, messages: lastChat})
